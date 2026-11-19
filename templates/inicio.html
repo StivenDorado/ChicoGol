@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}ChicoGol — Encuentra tu próximo partido{% endblock %}
+{% block content %}
+<section class="hero-wrap">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="pulse-dot"></span> La jugada empieza cerca</p>
+    <h1>Tu barrio.<br><em>Tu equipo.</em><br>Tu gol.</h1>
+    <p class="hero-lede">La forma sencilla de encontrar cancha, armar parche y jugar más seguido. ChicoGol pone el fútbol local en movimiento.</p>
+    <div class="hero-actions"><a class="button button-primary" href="{% url 'usuarios:registro' %}">Armar mi equipo <span aria-hidden="true">↗</span></a><a class="text-link" href="#como-funciona">Conocer más <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-note"><span class="hero-note-mark" aria-hidden="true">✦</span><span>Jugadores de tu zona ya están buscando partido</span></div>
+  </div>
+  <div class="hero-visual" aria-label="Ilustración de una cancha y un partido cercano" role="img">
+    <div class="sun-disc"></div><div class="stadium-lines"></div><div class="field-card"><div class="field-center"></div><div class="field-line"></div><div class="field-corner"></div><span class="field-label label-top">CANCHA 04</span><span class="field-label label-bottom">HOY · 7:30 PM</span><span class="field-ball">⚽</span></div>
+    <div class="match-chip"><span class="chip-icon">⌁</span><span><strong>Partido abierto</strong><small>A 1.4 km · Nivel recreativo</small></span><b>→</b></div>
+    <div class="hero-stamp">JUEGA<br><strong>CERCA</strong></div>
+  </div>
+</section>
+<section class="ticker" aria-label="Lo que puedes hacer en ChicoGol"><span>ENCUENTRA CANCHA</span><i>✦</i><span>ARMA TU PARCHE</span><i>✦</i><span>JUEGA MÁS SEGUIDO</span><i>✦</i><span>ENCUENTRA CANCHA</span></section>
+<section class="section intro-section" id="como-funciona"><div><p class="eyebrow">Una app, tres movimientos</p><h2>Menos vueltas.<br><em>Más fútbol.</em></h2></div><p class="section-intro">De la cancha vacía al partido completo, ChicoGol acompaña lo que pasa antes del pitazo inicial.</p></section>
+<section class="steps-grid" id="para-quien"><article class="step-card step-dark"><span class="step-number">01</span><span class="step-icon">⌖</span><h3>Encuentra</h3><p>Explora canchas y partidos cerca de ti, filtrados por hora y nivel.</p><a href="{% url 'usuarios:registro' %}">Ver canchas <span>↗</span></a></article><article class="step-card step-green"><span class="step-number">02</span><span class="step-icon">＋</span><h3>Arma</h3><p>Crea tu equipo, invita a tus amigos y completa los cupos del partido.</p><a href="{% url 'usuarios:registro' %}">Crear equipo <span>↗</span></a></article><article class="step-card step-coral"><span class="step-number">03</span><span class="step-icon">★</span><h3>Juega</h3><p>Registra el resultado, sube en el ranking y vuelve por la siguiente.</p><a href="{% url 'usuarios:registro' %}">Empezar ahora <span>↗</span></a></article></section>
+<section class="closing-banner"><p class="eyebrow">El partido no se arma solo</p><h2>La cancha está lista.<br><em>¿Y tú?</em></h2><a class="button button-light" href="{% url 'usuarios:registro' %}">Entrar a ChicoGol <span>↗</span></a></section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ equipo.nombre }} — ChicoGol{% endblock %}
+{% block content %}
+<section class="detail-shell team-detail">
+  <a class="back-link" href="{% url 'equipos:lista' %}">← Volver a equipos</a>
+  <div class="team-detail-grid">
+    <div>
+      {% if equipo.foto %}<img class="team-detail-photo" src="{{ equipo.foto.url }}" alt="Fotografía de {{ equipo.nombre }}">{% else %}<span class="team-mark team-mark-large">{{ equipo.nombre|first|upper }}</span>{% endif %}
+      <p class="eyebrow">{{ equipo.ciudad }} · {{ equipo.get_nivel_display }}</p>
+      <h1>{{ equipo.nombre }}</h1>
+      <p class="detail-description">{{ equipo.descripcion|default:"Un equipo listo para su siguiente partido." }}</p>
+      <p class="team-responsible"><strong>Responsable:</strong> {{ equipo.creador.get_full_name|default:equipo.creador.username }}</p>
+      <form method="post">
+        {% csrf_token %}
+        {% if es_miembro %}<span class="member-state">Ya eres parte de este equipo</span>
+        {% elif solicitud_usuario and solicitud_usuario.estado == "pendiente" %}<span class="member-state">Solicitud enviada, pendiente de respuesta</span>
+        {% elif solicitud_usuario and solicitud_usuario.estado == "rechazada" %}<button class="button button-primary" type="submit">Solicitar unirme de nuevo <span>↗</span></button>
+        {% else %}<button class="button button-primary" type="submit">Solicitar unirme <span>↗</span></button>{% endif %}
+      </form>
+    </div>
+    <div class="member-panel">
+      <p class="eyebrow">Plantilla · {{ equipo.miembros.count }} jugadores</p>
+      {% for miembro in equipo.miembros.all %}<div class="member-row"><span>{{ miembro.username|first|upper }}</span><strong>{{ miembro.get_full_name|default:miembro.username }}</strong>{% if miembro == equipo.creador %}<small>Responsable</small>{% endif %}</div>{% empty %}<p class="detail-description">Todavía no hay jugadores.</p>{% endfor %}
+    </div>
+  </div>
+  {% if es_creador and solicitudes %}
+  <div class="request-panel">
+    <div class="section-rule"><span>Solicitudes pendientes</span><span>{{ solicitudes|length }}</span></div>
+    {% for solicitud in solicitudes %}<div class="member-row request-row"><span>{{ solicitud.solicitante.username|first|upper }}</span><strong>{{ solicitud.solicitante.get_full_name|default:solicitud.solicitante.username }}</strong><small>{{ solicitud.solicitante.email }}</small><span class="request-actions"><form method="post" action="{% url 'equipos:gestionar_solicitud' equipo.pk solicitud.pk 'aceptar' %}">{% csrf_token %}<button class="button button-small button-primary" type="submit">Aceptar</button></form><form method="post" action="{% url 'equipos:gestionar_solicitud' equipo.pk solicitud.pk 'rechazar' %}">{% csrf_token %}<button class="button button-small button-secondary" type="submit">Rechazar</button></form></span></div>{% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

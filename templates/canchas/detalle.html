@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ cancha.nombre }} — ChicoGol{% endblock %}
+{% block content %}
+<section class="detail-shell">
+  <a class="back-link" href="{% url 'canchas:lista' %}">← Volver a canchas</a>
+  <div class="detail-layout">
+    <div class="detail-hero map-panel">
+      <span class="cancha-badge">{{ cancha.get_modalidad_display }}</span>
+      {% if cancha.latitud and cancha.longitud %}<iframe class="map-frame" title="Ubicación de {{ cancha.nombre }}" src="https://www.openstreetmap.org/export/embed.html?marker={{ cancha.latitud }},{{ cancha.longitud }}"></iframe>{% else %}<div class="map-fallback"><span>⌖</span><strong>Mapa pendiente</strong><p>La cancha aún no tiene coordenadas.</p></div>{% endif %}
+      <span class="detail-index">CHICOGOL / MAPA {{ cancha.pk|stringformat:"02d" }}</span>
+    </div>
+    <div class="detail-copy">
+      <p class="eyebrow">{{ cancha.barrio|default:cancha.ciudad }} · {{ cancha.ciudad }}</p>
+      <h1>{{ cancha.nombre }}</h1>
+      <p class="detail-description">{{ cancha.descripcion|default:"Una cancha lista para el próximo partido. Revisa la ubicación y arma tu parche." }}</p>
+      <dl class="detail-facts"><div><dt>Superficie</dt><dd>{{ cancha.get_tipo_display }}</dd></div><div><dt>Formato</dt><dd>{{ cancha.get_modalidad_display }}</dd></div><div><dt>Precio</dt><dd>{% if cancha.precio_hora %}${{ cancha.precio_hora|floatformat:0 }} / hora{% else %}Consultar{% endif %}</dd></div></dl>
+      <div class="address-block"><span>⌖</span><div><strong>Cómo llegar</strong><p>{{ cancha.direccion }}</p></div></div>
+      {% if cancha.servicios_lista %}<div class="service-list"><p class="eyebrow">Servicios</p>{% for servicio in cancha.servicios_lista %}<span>{{ servicio }}</span>{% endfor %}</div>{% endif %}
+      <a class="button button-primary" href="https://www.openstreetmap.org/search?query={{ cancha.direccion|urlencode }}" target="_blank" rel="noopener noreferrer">Abrir mapa grande <span>↗</span></a>
+    </div>
+  </div>
+  <section class="reviews-section" aria-labelledby="resenas-title">
+    <div class="reviews-heading"><div><p class="eyebrow">La comunidad opina</p><h2 id="resenas-title">Reseñas de esta cancha</h2></div><div class="reviews-summary"><strong>{{ promedio_resenas|floatformat:1 }}</strong><span>★ · {{ total_resenas }} reseña{{ total_resenas|pluralize }}</span></div></div>
+    {% if user.is_authenticated %}<form class="review-form profile-card" method="post" action="{% url 'canchas:guardar_resena' cancha.pk %}">{% csrf_token %}<div class="review-form-grid"><div class="field"><label for="id_calificacion">{{ resena_form.calificacion.label }}</label>{{ resena_form.calificacion }}</div><div class="field"><label for="id_comentario">{{ resena_form.comentario.label }}</label>{{ resena_form.comentario }}</div></div><button class="button button-primary" type="submit">{% if mi_resena %}Actualizar reseña{% else %}Publicar reseña{% endif %} <span>↗</span></button></form>{% else %}<p class="review-login">¿Ya jugaste aquí? <a href="{% url 'usuarios:login' %}?next={{ request.path|urlencode }}">Inicia sesión para calificar y comentar.</a></p>{% endif %}
+    <div class="reviews-list">{% for resena in resenas %}<article class="review-card"><div class="review-card-head"><strong>{{ resena.usuario.get_full_name|default:resena.usuario.username }}</strong><span class="review-stars" aria-label="{{ resena.calificacion }} de 5 estrellas">{% if resena.calificacion >= 1 %}★{% endif %}{% if resena.calificacion >= 2 %}★{% endif %}{% if resena.calificacion >= 3 %}★{% endif %}{% if resena.calificacion >= 4 %}★{% endif %}{% if resena.calificacion >= 5 %}★{% endif %}</span></div><p>{{ resena.comentario }}</p><small>{{ resena.creada_en|date:"d/m/Y" }}</small></article>{% empty %}<p class="review-empty">Todavía no hay reseñas. Sé la primera persona en contar cómo fue jugar aquí.</p>{% endfor %}</div>
+  </section>
+</section>
+{% endblock %}

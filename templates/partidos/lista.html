@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Partidos — ChicoGol{% endblock %}
+{% block content %}
+<section class="catalog-head matches-head"><div><p class="eyebrow"><span class="pulse-dot"></span> El próximo pitazo</p><h1>Partidos<br><em>abiertos.</em></h1><p>Encuentra un partido cerca, revisa los cupos y súmate al equipo.</p></div><a class="button button-primary" href="{% url 'partidos:crear' %}">Publicar partido <span>↗</span></a></section>
+<section class="catalog-body">
+  <div class="matches-list">{% for partido in partidos %}<article class="match-card"><div class="match-date"><strong>{{ partido.fecha|date:"d" }}</strong><span>{{ partido.fecha|date:"M"|upper }}</span></div><div class="match-main"><div class="match-kicker">{{ partido.fecha|date:"l · g:i A" }} · {{ partido.cancha.ciudad }}</div><h2>{{ partido.equipo.nombre }} <span>vs.</span> ¿Tú?</h2><p>{{ partido.cancha.nombre }} · {{ partido.cancha.barrio|default:partido.cancha.ciudad }}</p><small>Nivel {{ partido.get_nivel_display }} · {{ partido.fecha|date:"g:i A" }}</small></div><div class="match-side"><strong>{{ partido.cupos_disponibles }}/11</strong><span>cupos libres</span><a href="{% url 'partidos:detalle' partido.pk %}">Ver partido ↗</a></div></article>{% empty %}<div class="empty-state"><span>✦</span><h2>Todavía no hay partidos abiertos.</h2><p>Arma el primero con tu equipo.</p><a class="button button-primary" href="{% url 'partidos:crear' %}">Publicar partido</a></div>{% endfor %}</div>
+</section>
+{% endblock %}

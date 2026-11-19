@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Ingresar — ChicoGol{% endblock %}
+{% block content %}
+<section class="auth-shell"><div class="auth-aside"><span class="brand-mark">CG</span><p class="eyebrow">Vuelve a la cancha</p><h1>Tu próximo partido te está esperando.</h1><p>Entra para seguir tus equipos, partidos y canchas favoritas.</p></div><div class="auth-card"><p class="eyebrow">Cuenta ChicoGol</p><h2>Ingresar</h2>{% if form.non_field_errors %}<div class="form-error" role="alert">El usuario o la contraseña no son correctos.</div>{% endif %}<form method="post" novalidate>{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">{% for field in form %}<div class="field">{{ field.label_tag }}{{ field }}{% for error in field.errors %}<small class="error-text">{{ error }}</small>{% endfor %}</div>{% endfor %}<button class="button button-primary button-full" type="submit">Ingresar <span>↗</span></button></form><p class="auth-switch">¿Aún no tienes cuenta? <a href="{% url 'usuarios:registro' %}">Crea una gratis</a></p></div></section>
+{% endblock %}

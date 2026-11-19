@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>{% block title %}ChicoGol{% endblock %}</title>
+  <meta name="description" content="ChicoGol conecta jugadores, equipos y canchas para que el fútbol de barrio se mueva.">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <a class="brand" href="{% url 'inicio' %}" aria-label="ChicoGol, inicio">
+      <span class="brand-mark" aria-hidden="true">CG</span><span>Chico<span class="brand-accent">Gol</span></span>
+    </a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      {% if request.resolver_match.url_name == 'inicio' and not user.is_authenticated %}<a href="#como-funciona">Cómo funciona</a><a href="#para-quien">Para quién</a><a href="{% url 'usuarios:login' %}?next={% url 'partidos:lista' %}">Buscar partido</a><a href="{% url 'usuarios:login' %}">Ingresar</a><a class="nav-cta" href="{% url 'usuarios:registro' %}">Crear cuenta</a>
+      {% elif user.is_authenticated %}<a href="{% url 'inicio' %}">Inicio</a><a href="{% url 'canchas:lista' %}">Canchas</a><a href="{% url 'equipos:lista' %}">Equipos</a><a href="{% url 'partidos:lista' %}">Partidos</a><a href="{% url 'social:jugadores' %}">Jugadores</a><a href="{% url 'social:amigos' %}">Amigos</a><a href="{% url 'social:chats' %}">Chats</a><a class="notification-link" href="{% url 'notificaciones:lista' %}">Notificaciones{% if unread_notifications %}<sup>{{ unread_notifications }}</sup>{% endif %}</a><a class="nav-user" href="{% url 'usuarios:perfil' %}" aria-label="Perfil de {{ user.get_full_name|default:user.username }}"><span class="nav-avatar">{% if current_profile and current_profile.avatar %}<img src="{{ current_profile.avatar.url }}" alt="">{% else %}{{ user.username|first|upper }}{% endif %}</span><span class="nav-user-name">{{ user.get_full_name|default:user.username }}</span></a><form class="logout-form" action="{% url 'usuarios:logout' %}" method="post">{% csrf_token %}<button type="submit">Salir</button></form>
+      {% else %}<a href="{% url 'usuarios:login' %}">Ingresar</a><a class="nav-cta" href="{% url 'usuarios:registro' %}">Crear cuenta</a>{% endif %}
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span><span class="sr-only">Abrir menú</span></button>
+  </header>
+  <div id="mobile-menu" class="mobile-menu" hidden>
+    {% if request.resolver_match.url_name == 'inicio' and not user.is_authenticated %}<a href="#como-funciona">Cómo funciona</a><a href="#para-quien">Para quién</a><a href="{% url 'usuarios:login' %}?next={% url 'partidos:lista' %}">Buscar partido</a><a href="{% url 'usuarios:login' %}">Ingresar</a><a href="{% url 'usuarios:registro' %}">Crear cuenta</a>{% elif user.is_authenticated %}<a href="{% url 'inicio' %}">Inicio</a><a href="{% url 'canchas:lista' %}">Canchas</a><a href="{% url 'equipos:lista' %}">Equipos</a><a href="{% url 'partidos:lista' %}">Partidos</a><a href="{% url 'social:jugadores' %}">Jugadores</a><a href="{% url 'social:amigos' %}">Amigos</a><a href="{% url 'social:chats' %}">Chats</a><a href="{% url 'notificaciones:lista' %}">Notificaciones</a><a href="{% url 'usuarios:perfil' %}">Perfil</a><form class="logout-form" action="{% url 'usuarios:logout' %}" method="post">{% csrf_token %}<button type="submit">Salir</button></form>{% else %}<a href="{% url 'usuarios:login' %}">Ingresar</a><a href="{% url 'usuarios:registro' %}">Crear cuenta</a>{% endif %}
+  </div>
+  <main id="contenido">{% block content %}{% endblock %}</main>
+  <footer class="site-footer"><span>ChicoGol · Fútbol que encuentra su cancha.</span><span>Hecho para jugar cerca.</span></footer>
+  {% block extra_js %}{% endblock %}
+  <script src="{% static 'js/app.js' %}" defer></script>
+</body>
+</html>

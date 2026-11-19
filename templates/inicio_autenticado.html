@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Inicio — ChicoGol{% endblock %}
+{% block content %}
+<section class="dashboard-shell">
+  <header class="dashboard-head">
+    <div>
+      <p class="eyebrow"><span class="pulse-dot"></span> Tu cancha empieza aquí</p>
+      <h1>Hola, <em>{{ user.first_name|default:user.username }}</em>.</h1>
+      <p class="dashboard-lede">Esto es lo que está pasando cerca de ti{% if perfil.ciudad %}, en {{ perfil.ciudad }}{% endif %}.</p>
+    </div>
+    <a class="profile-summary" href="{% url 'usuarios:perfil' %}">
+      <span class="profile-avatar profile-avatar-dashboard">{% if perfil.avatar %}<img src="{{ perfil.avatar.url }}" alt="Fotografía de {{ user.get_full_name|default:user.username }}">{% else %}{{ user.username|first|upper }}{% endif %}</span>
+      <span><strong>{{ user.get_full_name|default:user.username }}</strong><small>{% if perfil.posicion %}{{ perfil.get_posicion_display }}{% else %}Completa tu perfil{% endif %}</small></span><b>↗</b>
+    </a>
+  </header>
+  <div class="dashboard-actions">
+    <a class="button button-primary" href="{% url 'partidos:lista' %}">Buscar partido <span>↗</span></a>
+    <a class="button button-secondary" href="{% url 'equipos:lista' %}">Ver mis equipos</a>
+    {% if not perfil.ciudad or not perfil.fecha_nacimiento %}<a class="dashboard-complete" href="{% url 'usuarios:mi_cancha' %}">Completa tu perfil para recibir mejores sugerencias →</a>{% endif %}
+  </div>
+  <section class="dashboard-section">
+    <div class="dashboard-section-head"><div><p class="eyebrow">Cerca de ti</p><h2>Partidos abiertos.</h2></div><a href="{% url 'partidos:lista' %}">Ver todos ↗</a></div>
+    <div class="dashboard-match-list">
+      {% for partido in partidos %}
+      <article class="dashboard-match"><div class="dashboard-match-date"><strong>{{ partido.fecha|date:"d" }}</strong><span>{{ partido.fecha|date:"M"|upper }}</span></div><div><p class="dashboard-match-kicker">{{ partido.fecha|date:"l · g:i A" }} · {{ partido.cancha.ciudad }}</p><h3>{{ partido.equipo.nombre }}</h3><p>{{ partido.cancha.nombre }} · {{ partido.cupos_disponibles }} cupos libres</p></div><a class="text-link" href="{% url 'partidos:detalle' partido.pk %}">Ver partido <span>↗</span></a></article>
+      {% empty %}<div class="dashboard-empty"><span>✦</span><h3>Aún no hay partidos cerca.</h3><p>Cuando alguien publique uno, aparecerá aquí.</p><a class="button button-secondary" href="{% url 'partidos:lista' %}">Explorar partidos</a></div>{% endfor %}
+    </div>
+  </section>
+  <section class="dashboard-lower"><article class="dashboard-panel"><p class="eyebrow">Tu perfil</p><h2>{% if perfil.ciudad and perfil.posicion %}Ya estás listo para jugar.{% else %}Haz que te encuentren.{% endif %}</h2><p>{% if perfil.ciudad and perfil.posicion %}Tu información ayuda a conectar con partidos que encajan contigo.{% else %}Agrega tu ciudad, posición y nivel para descubrir mejores partidos.{% endif %}</p><a class="text-link" href="{% url 'usuarios:mi_cancha' %}">{% if perfil.ciudad and perfil.posicion %}Editar mi perfil{% else %}Completar perfil{% endif %} <span>↗</span></a></article><article class="dashboard-panel dashboard-panel-dark"><p class="eyebrow">Mis equipos</p><div class="dashboard-team-list">{% for equipo in equipos %}<a href="{% url 'equipos:detalle' equipo.pk %}"><span>{{ equipo.nombre|first|upper }}</span><strong>{{ equipo.nombre }}</strong><small>{{ equipo.ciudad }} · {{ equipo.miembros.count }} jugadores</small><b>↗</b></a>{% empty %}<p class="dashboard-muted">Todavía no perteneces a un equipo.</p><a class="text-link" href="{% url 'equipos:lista' %}">Encontrar un equipo <span>↗</span></a>{% endfor %}</div></article></section>
+</section>
+{% endblock %}
