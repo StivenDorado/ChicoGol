@@ -9,3 +9,6 @@ work/
 outputs/
 *.log
 .DS_Store
+
+.vercel
+.env*
